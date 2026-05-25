@@ -10,6 +10,7 @@ public record AlunoResponseDTO(
         Long id,
         String nomeCompleto,
         LocalDate dataNascimento,
+        Integer idade,
         String rg,
         String cpf,
         Sexo sexo,

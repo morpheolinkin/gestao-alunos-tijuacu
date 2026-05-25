@@ -47,6 +47,9 @@ public class Aluno {
     @Enumerated(EnumType.STRING)
     private TipoAee tipoAee;
 
+    @Column(nullable = false)
+    private Boolean ativo;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "endereco_id")
     private Endereco endereco;

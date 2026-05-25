@@ -8,6 +8,9 @@ import br.com.tijuacu.gestaoalunos.model.entity.Aluno;
 import br.com.tijuacu.gestaoalunos.model.entity.Endereco;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 @Component
 public class AlunoMapper {
 
@@ -37,7 +40,13 @@ public class AlunoMapper {
                 .nomeMae(dto.nomeMae())
                 .tipoAee(dto.tipoAee())
                 .endereco(endereco)
+                .ativo(true)
                 .build();
+    }
+
+    private Integer calcularIdade(LocalDate dataNascimento) {
+        if (dataNascimento == null) return null;
+        return Period.between(dataNascimento, LocalDate.now()).getYears();
     }
 
     public AlunoResponseDTO toResponseDTO(Aluno entity) {
@@ -54,10 +63,13 @@ public class AlunoMapper {
                 end.getZona()
         );
 
+        Integer idade = calcularIdade(entity.getDataNascimento());
+
         return new AlunoResponseDTO(
                 entity.getId(),
                 entity.getNomeCompleto(),
                 entity.getDataNascimento(),
+                idade,
                 entity.getRg(),
                 entity.getCpf(),
                 entity.getSexo(),
