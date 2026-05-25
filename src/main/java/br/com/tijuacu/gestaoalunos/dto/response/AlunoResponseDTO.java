@@ -6,9 +6,14 @@ public record AlunoResponseDTO(
         Long id,
         String nomeCompleto,
         LocalDate dataNascimento,
+        String rg,
         String cpf,
         String sexo,
         String corRaca,
-        Boolean aee,
+        String cartaoSus,
+        Boolean transporteEscolar,
+        String nomePai,
+        String nomeMae,
+        String tipoAee,
         EnderecoResponseDTO endereco
 ) {}

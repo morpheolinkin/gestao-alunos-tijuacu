@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 public class AlunoMapper {
 
     public Aluno toEntity(AlunoRequestDTO dto) {
-        if (dto == null) return null;
-
         EnderecoRequestDTO end = dto.endereco();
 
         Endereco endereco = Endereco.builder()
@@ -29,17 +27,20 @@ public class AlunoMapper {
         return Aluno.builder()
                 .nomeCompleto(dto.nomeCompleto())
                 .dataNascimento(dto.dataNascimento())
+                .rg(dto.rg())
                 .cpf(dto.cpf())
                 .sexo(dto.sexo())
                 .corRaca(dto.corRaca())
-                .aee(dto.aee())
+                .cartaoSus(dto.cartaoSus())
+                .transporteEscolar(dto.transporteEscolar())
+                .nomePai(dto.nomePai())
+                .nomeMae(dto.nomeMae())
+                .tipoAee(dto.tipoAee())
                 .endereco(endereco)
                 .build();
     }
 
     public AlunoResponseDTO toResponseDTO(Aluno entity) {
-        if (entity == null) return null;
-
         Endereco end = entity.getEndereco();
 
         EnderecoResponseDTO enderecoDTO = new EnderecoResponseDTO(
@@ -57,10 +58,15 @@ public class AlunoMapper {
                 entity.getId(),
                 entity.getNomeCompleto(),
                 entity.getDataNascimento(),
+                entity.getRg(),
                 entity.getCpf(),
                 entity.getSexo(),
                 entity.getCorRaca(),
-                entity.getAee(),
+                entity.getCartaoSus(),
+                entity.getTransporteEscolar(),
+                entity.getNomePai(),
+                entity.getNomeMae(),
+                entity.getTipoAee(),
                 enderecoDTO
         );
     }
@@ -68,10 +74,15 @@ public class AlunoMapper {
     public void updateEntityFromDTO(AlunoRequestDTO dto, Aluno entity) {
         entity.setNomeCompleto(dto.nomeCompleto());
         entity.setDataNascimento(dto.dataNascimento());
+        entity.setRg(dto.rg());
         entity.setCpf(dto.cpf());
         entity.setSexo(dto.sexo());
         entity.setCorRaca(dto.corRaca());
-        entity.setAee(dto.aee());
+        entity.setCartaoSus(dto.cartaoSus());
+        entity.setTransporteEscolar(dto.transporteEscolar());
+        entity.setNomePai(dto.nomePai());
+        entity.setNomeMae(dto.nomeMae());
+        entity.setTipoAee(dto.tipoAee());
 
         EnderecoRequestDTO end = dto.endereco();
         Endereco endereco = entity.getEndereco();

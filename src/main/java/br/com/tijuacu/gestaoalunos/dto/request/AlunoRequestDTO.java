@@ -10,9 +10,14 @@ import java.time.LocalDate;
 public record AlunoRequestDTO(
         @NotBlank String nomeCompleto,
         @NotNull @Past LocalDate dataNascimento,
-        String cpf,
-        String sexo,
+        String rg,
+        @NotBlank String cpf,
+        String sexo,         // "M" ou "F"
         String corRaca,
-        Boolean aee,
+        String cartaoSus,
+        Boolean transporteEscolar,
+        String nomePai,
+        String nomeMae,
+        String tipoAee,      // "DI", "DA", "DV", "PC", "TEA" ou vazio
         @Valid @NotNull EnderecoRequestDTO endereco
 ) {}
