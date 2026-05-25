@@ -1,5 +1,8 @@
 package br.com.tijuacu.gestaoalunos.model.entity;
 
+import br.com.tijuacu.gestaoalunos.model.enums.Sexo;
+import br.com.tijuacu.gestaoalunos.model.enums.TipoAee;
+import br.com.tijuacu.gestaoalunos.model.enums.TransporteEscolar;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,21 +30,22 @@ public class Aluno {
     @Column(nullable = false)
     private String cpf;
 
-    private String sexo; // M ou F
+    @Enumerated(EnumType.STRING)
+    private Sexo sexo; // MASCULINO / FEMININO
 
     private String corRaca;
 
     private String cartaoSus;
 
-    private Boolean transporteEscolar; // true = SIM, false = NAO
+    @Enumerated(EnumType.STRING)
+    private TransporteEscolar transporteEscolar; // SIM / NAO
 
     private String nomePai;
 
     private String nomeMae;
 
-    // AEE pode ser um campo de texto com siglas ou, no futuro, uma enum/lista
-    private String tipoAee;
-    // Ex.: "DI", "DA", "DV", "PC", "TEA" ou combinação (pensamos melhor depois)
+    @Enumerated(EnumType.STRING)
+    private TipoAee tipoAee;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "endereco_id")

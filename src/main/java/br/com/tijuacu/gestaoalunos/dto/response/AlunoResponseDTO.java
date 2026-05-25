@@ -1,5 +1,9 @@
 package br.com.tijuacu.gestaoalunos.dto.response;
 
+import br.com.tijuacu.gestaoalunos.model.enums.Sexo;
+import br.com.tijuacu.gestaoalunos.model.enums.TipoAee;
+import br.com.tijuacu.gestaoalunos.model.enums.TransporteEscolar;
+
 import java.time.LocalDate;
 
 public record AlunoResponseDTO(
@@ -8,12 +12,12 @@ public record AlunoResponseDTO(
         LocalDate dataNascimento,
         String rg,
         String cpf,
-        String sexo,
+        Sexo sexo,
         String corRaca,
         String cartaoSus,
-        Boolean transporteEscolar,
+        TransporteEscolar transporteEscolar,
         String nomePai,
         String nomeMae,
-        String tipoAee,
+        TipoAee tipoAee,
         EnderecoResponseDTO endereco
 ) {}

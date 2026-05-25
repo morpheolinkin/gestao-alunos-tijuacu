@@ -1,5 +1,8 @@
 package br.com.tijuacu.gestaoalunos.dto.request;
 
+import br.com.tijuacu.gestaoalunos.model.enums.Sexo;
+import br.com.tijuacu.gestaoalunos.model.enums.TipoAee;
+import br.com.tijuacu.gestaoalunos.model.enums.TransporteEscolar;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,12 +15,12 @@ public record AlunoRequestDTO(
         @NotNull @Past LocalDate dataNascimento,
         String rg,
         @NotBlank String cpf,
-        String sexo,         // "M" ou "F"
+        Sexo sexo,                  // MASCULINO / FEMININO
         String corRaca,
         String cartaoSus,
-        Boolean transporteEscolar,
+        TransporteEscolar transporteEscolar, // SIM / NAO
         String nomePai,
         String nomeMae,
-        String tipoAee,      // "DI", "DA", "DV", "PC", "TEA" ou vazio
+        TipoAee tipoAee,            // DI, DA, DV, PC, TEA
         @Valid @NotNull EnderecoRequestDTO endereco
 ) {}
