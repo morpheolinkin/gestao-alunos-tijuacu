@@ -6,6 +6,9 @@ import br.com.tijuacu.gestaoalunos.dto.response.PaginatedResponse;
 import br.com.tijuacu.gestaoalunos.exception.AlunoNaoEncontradoException;
 import br.com.tijuacu.gestaoalunos.mapper.AlunoMapper;
 import br.com.tijuacu.gestaoalunos.model.entity.Aluno;
+import br.com.tijuacu.gestaoalunos.model.enums.Sexo;
+import br.com.tijuacu.gestaoalunos.model.enums.TipoAee;
+import br.com.tijuacu.gestaoalunos.model.enums.TransporteEscolar;
 import br.com.tijuacu.gestaoalunos.repository.AlunoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,17 +22,28 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final AlunoMapper alunoMapper;
 
-    public PaginatedResponse<AlunoResponseDTO> listar(String nome, Pageable pageable) {
+    public PaginatedResponse<AlunoResponseDTO> listar(
+            String nome,
+            Sexo sexo,
+            TransporteEscolar transporteEscolar,
+            TipoAee tipoAee,
+            Pageable pageable
+    ) {
         Page<Aluno> page;
 
         if (nome != null && !nome.isBlank()) {
-            page = alunoRepository.findByNomeCompletoContainingIgnoreCase(nome, pageable);
+            page = alunoRepository.findByAtivoTrueAndNomeCompletoContainingIgnoreCase(nome, pageable);
+        } else if (sexo != null) {
+            page = alunoRepository.findByAtivoTrueAndSexo(sexo, pageable);
+        } else if (transporteEscolar != null) {
+            page = alunoRepository.findByAtivoTrueAndTransporteEscolar(transporteEscolar, pageable);
+        } else if (tipoAee != null) {
+            page = alunoRepository.findByAtivoTrueAndTipoAee(tipoAee, pageable);
         } else {
-            page = alunoRepository.findAll(pageable);
+            page = alunoRepository.findByAtivoTrue(pageable);
         }
 
-        var content = page
-                .getContent()
+        var content = page.getContent()
                 .stream()
                 .map(alunoMapper::toResponseDTO)
                 .toList();
@@ -70,6 +84,7 @@ public class AlunoService {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new AlunoNaoEncontradoException(id));
 
-        alunoRepository.delete(aluno);
+        aluno.setAtivo(false);
+        alunoRepository.save(aluno);
     }
 }
