@@ -2,14 +2,15 @@ package br.com.tijuacu.gestaoalunos.service;
 
 import br.com.tijuacu.gestaoalunos.dto.request.AlunoRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.AlunoResponseDTO;
+import br.com.tijuacu.gestaoalunos.dto.response.PaginatedResponse;
 import br.com.tijuacu.gestaoalunos.exception.AlunoNaoEncontradoException;
 import br.com.tijuacu.gestaoalunos.mapper.AlunoMapper;
 import br.com.tijuacu.gestaoalunos.model.entity.Aluno;
 import br.com.tijuacu.gestaoalunos.repository.AlunoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,11 +19,28 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final AlunoMapper alunoMapper;
 
-    public List<AlunoResponseDTO> listarTodos() {
-        return alunoRepository.findAll()
+    public PaginatedResponse<AlunoResponseDTO> listar(String nome, Pageable pageable) {
+        Page<Aluno> page;
+
+        if (nome != null && !nome.isBlank()) {
+            page = alunoRepository.findByNomeCompletoContainingIgnoreCase(nome, pageable);
+        } else {
+            page = alunoRepository.findAll(pageable);
+        }
+
+        var content = page
+                .getContent()
                 .stream()
                 .map(alunoMapper::toResponseDTO)
                 .toList();
+
+        return new PaginatedResponse<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     public AlunoResponseDTO buscarPorId(Long id) {

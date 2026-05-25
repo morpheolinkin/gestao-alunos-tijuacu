@@ -2,28 +2,33 @@ package br.com.tijuacu.gestaoalunos.controller;
 
 import br.com.tijuacu.gestaoalunos.dto.request.AlunoRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.AlunoResponseDTO;
+import br.com.tijuacu.gestaoalunos.dto.response.PaginatedResponse;
 import br.com.tijuacu.gestaoalunos.service.AlunoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/alunos")
 @RequiredArgsConstructor
 @Tag(name = "Alunos", description = "Operações de CRUD de alunos")
 public class AlunoController {
+
     private final AlunoService alunoService;
 
     @GetMapping
-    @Operation(summary = "Listar todos os alunos")
-    public ResponseEntity<List<AlunoResponseDTO>> listar() {
-        return ResponseEntity.ok(alunoService.listarTodos());
+    @Operation(summary = "Lista alunos com paginação e filtro opcional por nome")
+    public ResponseEntity<PaginatedResponse<AlunoResponseDTO>> listar(
+            @RequestParam(required = false) String nome,
+            @ParameterObject Pageable pageable
+    ) {
+        return ResponseEntity.ok(alunoService.listar(nome, pageable));
     }
 
     @GetMapping("/{id}")
@@ -35,8 +40,8 @@ public class AlunoController {
     @PostMapping
     @Operation(summary = "Cria um novo aluno")
     public ResponseEntity<AlunoResponseDTO> criar(@Valid @RequestBody AlunoRequestDTO dto) {
-        AlunoResponseDTO criar = alunoService.criar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criar);
+        AlunoResponseDTO salvo = alunoService.criar(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
     @PutMapping("/{id}")
