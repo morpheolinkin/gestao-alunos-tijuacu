@@ -1,3 +1,31 @@
+# Perfil de DESENVOLVIMENTO (PostgreSQL via Docker)
 spring:
-  application:
-    name: gestao-alunos
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gestaoalunos_dev
+    username: gestao
+    password: gestao
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+# Configurações comuns a todos os perfis
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info # depois podemos abrir mais
+  endpoint:
+    health:
+      show-details: when_authorized

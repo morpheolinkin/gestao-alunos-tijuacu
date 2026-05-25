@@ -1,3 +1,32 @@
+# Perfil de TESTES (H2 em memória)
 spring:
-  application:
-    name: gestao-alunos
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:gestaoalunos;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  h2:
+    console:
+      enabled: true
+
+# Configurações comuns a todos os perfis
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info # depois podemos abrir mais
+  endpoint:
+    health:
+      show-details: when_authorized

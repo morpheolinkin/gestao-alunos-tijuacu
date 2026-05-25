@@ -1,3 +1,27 @@
+# Perfil de PRODUÇÃO (PostgreSQL, credenciais via ambiente)
 spring:
-  application:
-    name: gestao-alunos
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+
+# Configurações comuns a todos os perfis
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info # depois podemos abrir mais
+  endpoint:
+    health:
+      show-details: when_authorized
