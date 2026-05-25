@@ -1,5 +1,6 @@
 package br.com.tijuacu.gestaoalunos.model.entity;
 
+import br.com.tijuacu.gestaoalunos.model.audit.EntidadeAuditavel;
 import br.com.tijuacu.gestaoalunos.model.enums.Sexo;
 import br.com.tijuacu.gestaoalunos.model.enums.TipoAee;
 import br.com.tijuacu.gestaoalunos.model.enums.TransporteEscolar;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Aluno {
+public class Aluno extends EntidadeAuditavel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
