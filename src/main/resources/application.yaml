@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: gestao-alunos
+  profiles:
+    active: test
