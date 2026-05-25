@@ -2,6 +2,7 @@ package br.com.tijuacu.gestaoalunos.service;
 
 import br.com.tijuacu.gestaoalunos.dto.request.AlunoRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.AlunoResponseDTO;
+import br.com.tijuacu.gestaoalunos.exception.AlunoNaoEncontradoException;
 import br.com.tijuacu.gestaoalunos.mapper.AlunoMapper;
 import br.com.tijuacu.gestaoalunos.model.entity.Aluno;
 import br.com.tijuacu.gestaoalunos.repository.AlunoRepository;
@@ -26,7 +27,7 @@ public class AlunoService {
 
     public AlunoResponseDTO buscarPorId(Long id) {
         Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new AlunoNaoEncontradoException(id));
 
         return alunoMapper.toResponseDTO(aluno);
     }
@@ -39,7 +40,7 @@ public class AlunoService {
 
     public AlunoResponseDTO atualizar(Long id, AlunoRequestDTO dto) {
         Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new AlunoNaoEncontradoException(id));
 
         alunoMapper.updateEntityFromDTO(dto, aluno);
         Aluno atualizado = alunoRepository.save(aluno);
@@ -49,7 +50,7 @@ public class AlunoService {
 
     public void deletar(Long id) {
         Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+                .orElseThrow(() -> new AlunoNaoEncontradoException(id));
 
         alunoRepository.delete(aluno);
     }
