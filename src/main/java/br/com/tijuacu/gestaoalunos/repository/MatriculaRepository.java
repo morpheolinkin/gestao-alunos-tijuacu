@@ -39,23 +39,31 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
     List<Matricula> findByTurmaIdAndSituacao(Long turmaId, SituacaoMatricula situacao);
 
     // Evasões por mês (no ano letivo)
+    long countByAnoLetivo(Integer anoLetivo);
+
+    long countByAnoLetivoAndSituacao(Integer anoLetivo, SituacaoMatricula situacao);
+
+    long countBySituacao(SituacaoMatricula situacao);
+
     @Query("""
-       SELECT EXTRACT(MONTH FROM m.dataSaida) AS mes, COUNT(m)
-       FROM Matricula m
-       WHERE m.anoLetivo = :ano
-         AND m.situacao = :situacao
-         AND m.dataSaida IS NOT NULL
-       GROUP BY EXTRACT(MONTH FROM m.dataSaida)
-       ORDER BY mes
-       """)
+           SELECT EXTRACT(MONTH FROM m.dataSaida) AS mes, COUNT(m)
+           FROM Matricula m
+           WHERE m.anoLetivo = :ano
+             AND m.situacao = :situacao
+             AND m.dataSaida IS NOT NULL
+           GROUP BY EXTRACT(MONTH FROM m.dataSaida)
+           ORDER BY mes
+           """)
     List<Object[]> contarPorMesEAnoAndSituacao(
             @Param("ano") Integer ano,
             @Param("situacao") SituacaoMatricula situacao
     );
 
-    // Situações por ano
-    long countByAnoLetivoAndSituacao(Integer anoLetivo, SituacaoMatricula situacao);
-
-    // Situações gerais (histórico)
-    long countBySituacao(SituacaoMatricula situacao);
+    @Query("""
+           SELECT m.turma.id, COUNT(m)
+           FROM Matricula m
+           WHERE m.anoLetivo = :ano
+           GROUP BY m.turma.id
+           """)
+    List<Object[]> countAlunosPorTurmaNoAno(@Param("ano") Integer ano);
 }

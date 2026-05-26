@@ -27,6 +27,11 @@ public class DashboardService {
     public DashboardResumoDTO getResumo(Integer anoLetivo) {
         long totalAlunosAtivos = alunoRepository.countByAtivoTrue();
 
+        long totalMatriculasNoAnoLetivo = 0L;
+        if (anoLetivo != null) {
+            totalMatriculasNoAnoLetivo = matriculaRepository.countByAnoLetivo(anoLetivo);
+        }
+
         Map<String, Long> alunosPorSexo = new LinkedHashMap<>();
         for (Sexo sexo : Sexo.values()) {
             alunosPorSexo.put(sexo.name(), alunoRepository.countByAtivoTrueAndSexo(sexo));
@@ -42,7 +47,6 @@ public class DashboardService {
             alunosPorTipoAee.put(tipo.name(), alunoRepository.countByAtivoTrueAndTipoAee(tipo));
         }
 
-        // Situações no ano (MATRICULADO, EVADIDO, TRANSFERIDO, APROVADO, CONSERVADO, FALECIDO)
         Map<String, Long> matriculasPorSituacaoAno = new LinkedHashMap<>();
         if (anoLetivo != null) {
             for (SituacaoMatricula sit : SituacaoMatricula.values()) {
@@ -51,30 +55,26 @@ public class DashboardService {
             }
         }
 
-        // Situações gerais (histórico)
         Map<String, Long> matriculasPorSituacaoGeral = new LinkedHashMap<>();
         for (SituacaoMatricula sit : SituacaoMatricula.values()) {
             long count = matriculaRepository.countBySituacao(sit);
             matriculasPorSituacaoGeral.put(sit.name(), count);
         }
 
-        // Evasões por mês no ano
         Map<String, Long> evasoesPorMes = new HashMap<>();
         Map<String, Long> transferenciasPorMes = new HashMap<>();
 
         if (anoLetivo != null) {
-            // EVADIDO
             List<Object[]> evasoes = matriculaRepository.contarPorMesEAnoAndSituacao(
                     anoLetivo, SituacaoMatricula.EVADIDO
             );
             for (Object[] row : evasoes) {
                 Integer mes = ((Number) row[0]).intValue();
                 Long total = ((Number) row[1]).longValue();
-                String mesStr = String.format("%02d", mes); // "01", "02", ...
+                String mesStr = String.format("%02d", mes);
                 evasoesPorMes.put(mesStr, total);
             }
 
-            // TRANSFERIDO
             List<Object[]> transf = matriculaRepository.contarPorMesEAnoAndSituacao(
                     anoLetivo, SituacaoMatricula.TRANSFERIDO
             );
@@ -86,15 +86,27 @@ public class DashboardService {
             }
         }
 
+        Map<Long, Long> alunosPorTurmaNoAno = new LinkedHashMap<>();
+        if (anoLetivo != null) {
+            List<Object[]> rows = matriculaRepository.countAlunosPorTurmaNoAno(anoLetivo);
+            for (Object[] row : rows) {
+                Long turmaId = ((Number) row[0]).longValue();
+                Long total = ((Number) row[1]).longValue();
+                alunosPorTurmaNoAno.put(turmaId, total);
+            }
+        }
+
         return new DashboardResumoDTO(
                 totalAlunosAtivos,
+                totalMatriculasNoAnoLetivo,
                 alunosPorSexo,
                 alunosPorTipoAee,
                 alunosPorTransporte,
                 matriculasPorSituacaoAno,
                 evasoesPorMes,
                 transferenciasPorMes,
-                matriculasPorSituacaoGeral
+                matriculasPorSituacaoGeral,
+                alunosPorTurmaNoAno
         );
     }
 }
