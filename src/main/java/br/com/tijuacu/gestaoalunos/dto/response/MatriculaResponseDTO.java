@@ -10,6 +10,8 @@ public record MatriculaResponseDTO(
         Integer anoLetivo,
         LocalDate dataMatricula,
         SituacaoMatricula situacao,
+        LocalDate dataSaida,
+        String motivoSaida,
         Long alunoId,
         String alunoNome,
         Long turmaId,

@@ -1,4 +1,4 @@
-package br.com.tijuacu.gestaoalunos.main;
+package br.com.tijuacu.gestaoalunos.aux;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

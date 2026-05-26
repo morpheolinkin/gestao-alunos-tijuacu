@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(usuarioDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        // Login e docs liberados
+                        // Endpoints públicos
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/v3/api-docs/**",
@@ -39,14 +39,19 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/actuator/info"
                         ).permitAll()
-                        // Exemplo de proteção por role:
+
+                        // Área de administração de usuários (só ADMIN)
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+
+                        // Gestão escolar (ADMIN ou SECRETARIO)
                         .requestMatchers(
                                 "/api/alunos/**",
                                 "/api/turmas/**",
                                 "/api/matriculas/**",
                                 "/api/dashboard/**"
                         ).hasAnyRole("ADMIN", "SECRETARIO")
+
+                        // Qualquer outra rota exige autenticação
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

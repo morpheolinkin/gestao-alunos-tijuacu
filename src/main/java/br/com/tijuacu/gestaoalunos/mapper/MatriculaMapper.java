@@ -20,6 +20,8 @@ public class MatriculaMapper {
                 .anoLetivo(dto.anoLetivo())
                 .dataMatricula(dto.dataMatricula())
                 .situacao(dto.situacao())
+                .dataSaida(dto.dataSaida())
+                .motivoSaida(dto.motivoSaida())
                 .aluno(aluno)
                 .turma(turma)
                 .ativa(true)
@@ -33,6 +35,8 @@ public class MatriculaMapper {
                 entity.getAnoLetivo(),
                 entity.getDataMatricula(),
                 entity.getSituacao(),
+                entity.getDataSaida(),
+                entity.getMotivoSaida(),
                 entity.getAluno().getId(),
                 entity.getAluno().getNomeCompleto(),
                 entity.getTurma().getId(),

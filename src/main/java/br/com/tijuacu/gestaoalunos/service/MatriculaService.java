@@ -1,6 +1,7 @@
 package br.com.tijuacu.gestaoalunos.service;
 
 import br.com.tijuacu.gestaoalunos.dto.request.MatriculaRequestDTO;
+import br.com.tijuacu.gestaoalunos.dto.request.MatriculaSituacaoRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.MatriculaResponseDTO;
 import br.com.tijuacu.gestaoalunos.exception.AlunoNaoEncontradoException;
 import br.com.tijuacu.gestaoalunos.exception.MatriculaAtivaJaExistenteException;
@@ -17,6 +18,7 @@ import br.com.tijuacu.gestaoalunos.repository.TurmaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -111,5 +113,40 @@ public class MatriculaService {
 
         matricula.setAtiva(false);
         matriculaRepository.save(matricula);
+    }
+
+    public MatriculaResponseDTO marcarComoEvadido(Long id, MatriculaSituacaoRequestDTO dto) {
+        Matricula m = buscarEntidadePorId(id);
+        m.setSituacao(SituacaoMatricula.EVADIDO);
+        m.setDataSaida(dto.dataSaida());
+        m.setMotivoSaida(dto.motivoSaida());
+        m.setAtiva(false); // regra: evadido não é matrícula ativa
+        Matricula salvo = matriculaRepository.save(m);
+        return matriculaMapper.toResponseDTO(salvo);
+    }
+
+    public MatriculaResponseDTO marcarComoTransferido(Long id, MatriculaSituacaoRequestDTO dto) {
+        Matricula m = buscarEntidadePorId(id);
+        m.setSituacao(SituacaoMatricula.TRANSFERIDO);
+        m.setDataSaida(dto.dataSaida());
+        m.setMotivoSaida(dto.motivoSaida());
+        m.setAtiva(false);
+        Matricula salvo = matriculaRepository.save(m);
+        return matriculaMapper.toResponseDTO(salvo);
+    }
+
+    public MatriculaResponseDTO marcarComoAprovado(Long id, MatriculaSituacaoRequestDTO dto) {
+        Matricula m = buscarEntidadePorId(id);
+        m.setSituacao(SituacaoMatricula.APROVADO);
+        m.setDataSaida(dto.dataSaida());
+        m.setMotivoSaida(dto.motivoSaida());
+        m.setAtiva(false); // aprovado normalmente encerra a matrícula na turma
+        Matricula salvo = matriculaRepository.save(m);
+        return matriculaMapper.toResponseDTO(salvo);
+    }
+
+    private Matricula buscarEntidadePorId(Long id) {
+        return matriculaRepository.findById(id)
+                .orElseThrow(() -> new MatriculaNaoEncontradaException(id));
     }
 }

@@ -20,4 +20,12 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     Page<Aluno> findByAtivoTrueAndTransporteEscolar(TransporteEscolar transporteEscolar, Pageable pageable);
 
     Page<Aluno> findByAtivoTrueAndTipoAee(TipoAee tipoAee, Pageable pageable);
+
+    long countByAtivoTrue();
+
+    long countByAtivoTrueAndSexo(Sexo sexo);
+
+    long countByAtivoTrueAndTransporteEscolar(TransporteEscolar transporteEscolar);
+
+    long countByAtivoTrueAndTipoAee(TipoAee tipoAee);
 }

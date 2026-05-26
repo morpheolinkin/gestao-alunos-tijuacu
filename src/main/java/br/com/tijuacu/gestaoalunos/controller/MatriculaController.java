@@ -1,6 +1,7 @@
 package br.com.tijuacu.gestaoalunos.controller;
 
 import br.com.tijuacu.gestaoalunos.dto.request.MatriculaRequestDTO;
+import br.com.tijuacu.gestaoalunos.dto.request.MatriculaSituacaoRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.MatriculaResponseDTO;
 import br.com.tijuacu.gestaoalunos.model.enums.SituacaoMatricula;
 import br.com.tijuacu.gestaoalunos.service.MatriculaService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -76,5 +78,32 @@ public class MatriculaController {
     public ResponseEntity<Void> cancelar(@PathVariable Long id) {
         matriculaService.cancelar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/evadir")
+    @Operation(summary = "Marca uma matrícula como EVADIDO")
+    public ResponseEntity<MatriculaResponseDTO> marcarComoEvadido(
+            @PathVariable Long id,
+            @Valid @RequestBody MatriculaSituacaoRequestDTO dto
+    ) {
+        return ResponseEntity.ok(matriculaService.marcarComoEvadido(id, dto));
+    }
+
+    @PatchMapping("/{id}/transferir")
+    @Operation(summary = "Marca uma matrícula como TRANSFERIDO")
+    public ResponseEntity<MatriculaResponseDTO> marcarComoTransferido(
+            @PathVariable Long id,
+            @Valid @RequestBody MatriculaSituacaoRequestDTO dto
+    ) {
+        return ResponseEntity.ok(matriculaService.marcarComoTransferido(id, dto));
+    }
+
+    @PatchMapping("/{id}/aprovar")
+    @Operation(summary = "Marca uma matrícula como APROVADO")
+    public ResponseEntity<MatriculaResponseDTO> marcarComoAprovado(
+            @PathVariable Long id,
+            @Valid @RequestBody MatriculaSituacaoRequestDTO dto
+    ) {
+        return ResponseEntity.ok(matriculaService.marcarComoAprovado(id, dto));
     }
 }

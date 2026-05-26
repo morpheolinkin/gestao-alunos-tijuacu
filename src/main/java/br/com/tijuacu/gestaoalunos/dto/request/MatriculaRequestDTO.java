@@ -11,5 +11,7 @@ public record MatriculaRequestDTO(
         @NotNull LocalDate dataMatricula,
         @NotNull SituacaoMatricula situacao,
         @NotNull Long alunoId,
-        @NotNull Long turmaId
+        @NotNull Long turmaId,
+        LocalDate dataSaida,
+        String motivoSaida
 ) {}

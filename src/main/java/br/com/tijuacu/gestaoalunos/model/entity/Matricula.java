@@ -20,21 +20,21 @@ public class Matricula extends EntidadeAuditavel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Número de chamada ou número interno da matrícula
     private Integer numero;
-
     private Integer anoLetivo;
-
     private LocalDate dataMatricula;
 
     @Enumerated(EnumType.STRING)
     private SituacaoMatricula situacao;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    private LocalDate dataSaida;     // novo
+    private String motivoSaida;      // novo
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "turma_id", nullable = false)
     private Turma turma;
 
