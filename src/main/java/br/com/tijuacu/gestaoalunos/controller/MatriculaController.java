@@ -2,6 +2,7 @@ package br.com.tijuacu.gestaoalunos.controller;
 
 import br.com.tijuacu.gestaoalunos.dto.request.MatriculaRequestDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.MatriculaResponseDTO;
+import br.com.tijuacu.gestaoalunos.model.enums.SituacaoMatricula;
 import br.com.tijuacu.gestaoalunos.service.MatriculaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,27 @@ public class MatriculaController {
     @Operation(summary = "Lista todas as matrículas")
     public ResponseEntity<List<MatriculaResponseDTO>> listarTodas() {
         return ResponseEntity.ok(matriculaService.listarTodas());
+    }
+
+    @GetMapping("/turma/{turmaId}")
+    @Operation(summary = "Lista matrículas ativas de uma turma")
+    public ResponseEntity<List<MatriculaResponseDTO>> listarPorTurma(@PathVariable Long turmaId) {
+        return ResponseEntity.ok(matriculaService.listarPorTurma(turmaId));
+    }
+
+    @GetMapping("/aluno/{alunoId}")
+    @Operation(summary = "Lista histórico de matrículas de um aluno")
+    public ResponseEntity<List<MatriculaResponseDTO>> listarHistoricoPorAluno(@PathVariable Long alunoId) {
+        return ResponseEntity.ok(matriculaService.listarHistoricoPorAluno(alunoId));
+    }
+
+    @GetMapping("/filtro")
+    @Operation(summary = "Lista matrículas por ano letivo e situação")
+    public ResponseEntity<List<MatriculaResponseDTO>> listarPorAnoESituacao(
+            @RequestParam Integer anoLetivo,
+            @RequestParam SituacaoMatricula situacao
+    ) {
+        return ResponseEntity.ok(matriculaService.listarPorAnoESituacao(anoLetivo, situacao));
     }
 
     @GetMapping("/{id}")

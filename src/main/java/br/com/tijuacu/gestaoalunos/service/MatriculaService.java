@@ -34,6 +34,27 @@ public class MatriculaService {
                 .toList();
     }
 
+    public List<MatriculaResponseDTO> listarPorTurma(Long turmaId) {
+        return matriculaRepository.findByTurmaIdAndAtivaTrue(turmaId)
+                .stream()
+                .map(matriculaMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<MatriculaResponseDTO> listarHistoricoPorAluno(Long alunoId) {
+        return matriculaRepository.findByAlunoIdOrderByAnoLetivoAsc(alunoId)
+                .stream()
+                .map(matriculaMapper::toResponseDTO)
+                .toList();
+    }
+
+    public List<MatriculaResponseDTO> listarPorAnoESituacao(Integer anoLetivo, SituacaoMatricula situacao) {
+        return matriculaRepository.findByAnoLetivoAndSituacaoAndAtivaTrue(anoLetivo, situacao)
+                .stream()
+                .map(matriculaMapper::toResponseDTO)
+                .toList();
+    }
+
     public MatriculaResponseDTO buscarPorId(Long id) {
         Matricula matricula = matriculaRepository.findById(id)
                 .orElseThrow(() -> new MatriculaNaoEncontradaException(id));
