@@ -31,7 +31,7 @@ public class MatriculaService {
     private final MatriculaMapper matriculaMapper;
 
     public List<MatriculaResponseDTO> listarTodas() {
-        return matriculaRepository.findAll().stream()
+        return matriculaRepository.findDetalhadoAll().stream()
                 .map(matriculaMapper::toResponseDTO)
                 .toList();
     }
@@ -58,7 +58,7 @@ public class MatriculaService {
     }
 
     public MatriculaResponseDTO buscarPorId(Long id) {
-        Matricula matricula = matriculaRepository.findById(id)
+        Matricula matricula = matriculaRepository.findDetalhadoById(id)
                 .orElseThrow(() -> new MatriculaNaoEncontradaException(id));
 
         return matriculaMapper.toResponseDTO(matricula);

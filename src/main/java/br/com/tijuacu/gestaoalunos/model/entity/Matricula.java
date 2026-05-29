@@ -30,11 +30,11 @@ public class Matricula extends EntidadeAuditavel {
     private LocalDate dataSaida;     // novo
     private String motivoSaida;      // novo
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turma_id", nullable = false)
     private Turma turma;
 

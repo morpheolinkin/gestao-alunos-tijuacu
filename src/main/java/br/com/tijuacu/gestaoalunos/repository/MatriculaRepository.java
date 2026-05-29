@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
@@ -21,20 +22,22 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
     );
 
     // Consultas para refinamento
-    List<Matricula> findByTurmaIdAndAtivaTrue(Long turmaId);
+    // Sobrescrevendo o findById padrão para trazer aluno e turma juntos
+    @Query("SELECT m FROM Matricula m JOIN FETCH m.aluno JOIN FETCH m.turma WHERE m.id = :id")
+    Optional<Matricula> findDetalhadoById(@Param("id") Long id);
 
-    List<Matricula> findByAlunoIdOrderByAnoLetivoAsc(Long alunoId);
+    // Sobrescrevendo o findAll
+    @Query("SELECT m FROM Matricula m JOIN FETCH m.aluno JOIN FETCH m.turma")
+    List<Matricula> findDetalhadoAll();
 
-    List<Matricula> findByAnoLetivoAndSituacaoAndAtivaTrue(Integer anoLetivo, SituacaoMatricula situacao);
+    @Query("SELECT m FROM Matricula m JOIN FETCH m.aluno JOIN FETCH m.turma WHERE m.turma.id = :turmaId AND m.ativa = true")
+    List<Matricula> findByTurmaIdAndAtivaTrue(@Param("turmaId") Long turmaId);
 
-    List<Matricula> findByAnoLetivoAndSituacao(Integer anoLetivo, SituacaoMatricula situacao);
+    @Query("SELECT m FROM Matricula m JOIN FETCH m.aluno JOIN FETCH m.turma WHERE m.aluno.id = :alunoId ORDER BY m.anoLetivo ASC")
+    List<Matricula> findByAlunoIdOrderByAnoLetivoAsc(@Param("alunoId") Long alunoId);
 
-    List<Matricula> findByAnoLetivoAndSituacaoAndDataSaidaBetween(
-            Integer anoLetivo,
-            SituacaoMatricula situacao,
-            LocalDate inicio,
-            LocalDate fim
-    );
+    @Query("SELECT m FROM Matricula m JOIN FETCH m.aluno JOIN FETCH m.turma WHERE m.anoLetivo = :anoLetivo AND m.situacao = :situacao AND m.ativa = true")
+    List<Matricula> findByAnoLetivoAndSituacaoAndAtivaTrue(@Param("anoLetivo") Integer anoLetivo, @Param("situacao") SituacaoMatricula situacao);
 
     List<Matricula> findByTurmaIdAndSituacao(Long turmaId, SituacaoMatricula situacao);
 
@@ -45,14 +48,21 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
 
     long countBySituacao(SituacaoMatricula situacao);
 
+    // Adicione no MatriculaRepository.java
+    @Query("SELECT m.situacao, COUNT(m) FROM Matricula m WHERE m.anoLetivo = :ano GROUP BY m.situacao")
+    List<Object[]> countMatriculasPorSituacaoAnoAgrupado(@Param("ano") Integer anoLetivo);
+
+    @Query("SELECT m.situacao, COUNT(m) FROM Matricula m GROUP BY m.situacao")
+    List<Object[]> countMatriculasPorSituacaoGeralAgrupado();
+
     @Query("""
-           SELECT EXTRACT(MONTH FROM m.dataSaida) AS mes, COUNT(m)
+           SELECT MONTH(m.dataSaida) AS mes, COUNT(m)
            FROM Matricula m
            WHERE m.anoLetivo = :ano
              AND m.situacao = :situacao
              AND m.dataSaida IS NOT NULL
-           GROUP BY EXTRACT(MONTH FROM m.dataSaida)
-           ORDER BY mes
+           GROUP BY MONTH(m.dataSaida)
+           ORDER BY MONTH(m.dataSaida)
            """)
     List<Object[]> contarPorMesEAnoAndSituacao(
             @Param("ano") Integer ano,
@@ -62,7 +72,7 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Long> {
     @Query("""
            SELECT m.turma.id, COUNT(m)
            FROM Matricula m
-           WHERE m.anoLetivo = :ano
+           WHERE m.anoLetivo = :ano AND m.ativa = true
            GROUP BY m.turma.id
            """)
     List<Object[]> countAlunosPorTurmaNoAno(@Param("ano") Integer ano);

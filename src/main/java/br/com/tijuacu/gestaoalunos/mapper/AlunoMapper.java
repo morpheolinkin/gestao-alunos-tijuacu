@@ -51,17 +51,21 @@ public class AlunoMapper {
 
     public AlunoResponseDTO toResponseDTO(Aluno entity) {
         Endereco end = entity.getEndereco();
+        EnderecoResponseDTO enderecoDTO = null;
 
-        EnderecoResponseDTO enderecoDTO = new EnderecoResponseDTO(
-                end.getId(),
-                end.getLogradouro(),
-                end.getNumero(),
-                end.getBairro(),
-                end.getDistrito(),
-                end.getCidade(),
-                end.getCep(),
-                end.getZona()
-        );
+        // 1. Verificação de segurança: só cria o DTO de endereço se 'end' não for nulo
+        if (end != null) {
+            enderecoDTO = new EnderecoResponseDTO(
+                    end.getId(),
+                    end.getLogradouro(),
+                    end.getNumero(),
+                    end.getBairro(),
+                    end.getDistrito(),
+                    end.getCidade(),
+                    end.getCep(),
+                    end.getZona()
+            );
+        }
 
         Integer idade = calcularIdade(entity.getDataNascimento());
 
@@ -79,7 +83,7 @@ public class AlunoMapper {
                 entity.getNomePai(),
                 entity.getNomeMae(),
                 entity.getTipoAee(),
-                enderecoDTO
+                enderecoDTO // Passamos o DTO preenchido ou 'null' se o aluno não tiver endereço
         );
     }
 
@@ -96,14 +100,22 @@ public class AlunoMapper {
         entity.setNomeMae(dto.nomeMae());
         entity.setTipoAee(dto.tipoAee());
 
-        EnderecoRequestDTO end = dto.endereco();
-        Endereco endereco = entity.getEndereco();
-        endereco.setLogradouro(end.logradouro());
-        endereco.setNumero(end.numero());
-        endereco.setBairro(end.bairro());
-        endereco.setDistrito(end.distrito());
-        endereco.setCidade(end.cidade());
-        endereco.setCep(end.cep());
-        endereco.setZona(end.zona());
+        EnderecoRequestDTO endDTO = dto.endereco();
+
+        // 2. Proteção na atualização: Se o DTO tem endereço, mas a entidade ainda não tinha
+        if (endDTO != null) {
+            if (entity.getEndereco() == null) {
+                entity.setEndereco(new Endereco()); // Instancia um novo endereço se estava nulo
+            }
+
+            Endereco endereco = entity.getEndereco();
+            endereco.setLogradouro(endDTO.logradouro());
+            endereco.setNumero(endDTO.numero());
+            endereco.setBairro(endDTO.bairro());
+            endereco.setDistrito(endDTO.distrito());
+            endereco.setCidade(endDTO.cidade());
+            endereco.setCep(endDTO.cep());
+            endereco.setZona(endDTO.zona());
+        }
     }
 }
