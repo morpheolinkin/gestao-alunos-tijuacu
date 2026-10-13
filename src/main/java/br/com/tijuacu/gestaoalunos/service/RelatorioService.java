@@ -2,15 +2,30 @@ package br.com.tijuacu.gestaoalunos.service;
 
 import br.com.tijuacu.gestaoalunos.dto.response.AlunoResponseDTO;
 import br.com.tijuacu.gestaoalunos.dto.response.MatriculaResponseDTO;
-import com.lowagie.text.*;
+
+// --- Imports apenas do OpenPDF (Específicos) ---
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.*;
+
+// --- Imports apenas do Apache POI (Específicos) ---
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,7 +41,7 @@ public class RelatorioService {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheet = workbook.createSheet("Alunos Ativos");
 
-            // Estilo do Cabeçalho
+            // Estilo do Cabeçalho - Usando o caminho completo para evitar conflito com PDF Font
             org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
             headerFont.setBold(true);
             CellStyle headerCellStyle = workbook.createCellStyle();
@@ -38,6 +53,7 @@ public class RelatorioService {
             Row headerRow = sheet.createRow(0);
             String[] colunas = {"ID", "Nome Completo", "CPF", "Idade", "Sexo", "Transporte", "AEE"};
             for (int i = 0; i < colunas.length; i++) {
+                // Usando caminho completo para evitar conflito com PDF Cell
                 org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
                 cell.setCellValue(colunas[i]);
                 cell.setCellStyle(headerCellStyle);
@@ -77,7 +93,7 @@ public class RelatorioService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            // Cabeçalho institucional do documento
+            // Cabeçalho institucional do documento - Usando caminho completo para PDF Font
             com.lowagie.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
             Paragraph title = new Paragraph("Escola Municipal Prof.ª Anísia Maria Rodrigues", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);

@@ -15,8 +15,16 @@ public class UsuarioDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
+        System.out.println("Buscando no banco o usuário: [" + username + "]");
+
         Usuario usuario = usuarioRepository.findByUsernameAndAtivoTrue(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+                .orElseThrow(() -> {
+                    System.out.println("ERRO FATAL: Usuário não existe no banco ou está inativo!");
+                    return new UsernameNotFoundException("Usuário não encontrado: " + username);
+                });
+
+        System.out.println("Usuário encontrado! Hash salvo no banco: [" + usuario.getSenha() + "]");
+
         return new UsuarioDetails(usuario);
     }
 }

@@ -26,6 +26,10 @@ public class AuthController {
     @Operation(summary = "Autentica e retorna um token JWT")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
 
+        // ADICIONE ESTAS 3 LINHAS AQUI:
+        System.out.println("=== TENTATIVA DE LOGIN ===");
+        System.out.println("Usuário que chegou do React: [" + request.username() + "]");
+        System.out.println("Senha que chegou do React: [" + request.password() + "]");
         try {
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     request.username(),
